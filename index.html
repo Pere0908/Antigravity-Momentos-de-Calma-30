@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Momentos de Calma</title>
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- SPA Views Container -->
+    <main id="main-content">
+
+        <!-- ==============================================
+             HOME VIEW (Matches Image Exactly)
+             ============================================== -->
+        <section id="view-home" class="view section-active">
+            
+            <!-- Hero Top Half (Background Image) -->
+            <div class="hero-bg">
+                <!-- Header (Overlay on Hero) -->
+                <header class="app-header">
+                    <div class="logo">
+                        <i class="fa-solid fa-layer-group logo-icon"></i>
+                        <h1>Momentos de Calma</h1>
+                    </div>
+                    
+                    <nav class="main-nav">
+                        <ul>
+                            <li><a href="#" class="nav-link active" data-target="home" onclick="app.navigate('home'); return false;">Inicio</a></li>
+                            <li><a href="#" class="nav-link" data-target="about" onclick="app.navigate('about'); return false;">Sobre mí</a></li>
+                            <li><a href="mailto:pablomartinallue@gmail.com">Contacto</a></li>
+                        </ul>
+                    </nav>
+                    
+                    <div class="search-bar">
+                        <i class="fa-solid fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar consejos, meditaciones, relatos...">
+                    </div>
+                </header>
+
+                <div class="hero-content">
+                    <!-- Left side empty to show background -->
+                    <div class="hero-left"></div>
+                    
+                    <!-- Right side floating card -->
+                    <div class="hero-right">
+                        <div class="latest-tip-card glass-panel" id="latest-tip-container">
+                            <div class="loading-spinner">Cargando último consejo...</div>
+                            <!-- Inserted dynamically by app.js -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-fade-bottom"></div>
+            </div>
+
+            <!-- Bottom Half (White BG) -->
+            <div class="main-body-bg">
+                
+                <!-- Categories Section -->
+                <div class="categories-section">
+                    <div class="section-header">
+                        <h2>Explora por categoría</h2>
+                        <p>Encuentra contenido curado para tu bienestar y crecimiento personal</p>
+                    </div>
+
+                    <div class="categories-grid" id="categories-container">
+                        <!-- Category 1 -->
+                        <div class="category-card cat-blue" onclick="app.navigate('category', 'Paz Interior')">
+                            <div class="cat-image" style="background-image: url('cat-paz.png');"></div>
+                            <div class="cat-content">
+                                <h3 class="cat-title"><i class="fa-solid fa-spa cat-icon"></i> PAZ INTERIOR</h3>
+                                <p class="cat-desc">Encuentra serenidad en medio del caos mental.</p>
+                            </div>
+                        </div>
+                        <!-- Category 2 -->
+                        <div class="category-card cat-purple" onclick="app.navigate('category', 'Vínculos')">
+                            <div class="cat-image" style="background-image: url('cat-vinculos.png');"></div>
+                            <div class="cat-content">
+                                <h3 class="cat-title"><i class="fa-solid fa-heart cat-icon"></i> VÍNCULOS QUE SANAN</h3>
+                                <p class="cat-desc">Cultiva relaciones conscientes y amorosas.</p>
+                            </div>
+                        </div>
+                        <!-- Category 3 -->
+                        <div class="category-card cat-yellow" onclick="app.navigate('category', 'Poder Personal')">
+                            <div class="cat-image" style="background-image: url('cat-poder.png');"></div>
+                            <div class="cat-content">
+                                <h3 class="cat-title"><i class="fa-solid fa-bolt cat-icon"></i> PODER PERSONAL</h3>
+                                <p class="cat-desc">Despierta tu fortaleza interior y propósito.</p>
+                            </div>
+                        </div>
+                        <!-- Category 4 -->
+                        <div class="category-card cat-green" onclick="app.navigate('category', 'Bienestar Integral')">
+                            <div class="cat-image" style="background-image: url('cat-bienestar.png');"></div>
+                            <div class="cat-content">
+                                <h3 class="cat-title"><i class="fa-solid fa-leaf cat-icon"></i> BIENESTAR INTEGRAL</h3>
+                                <p class="cat-desc">Equilibra cuerpo, mente y espíritu.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feed Section -->
+                <div class="feed-section">
+                    <h2 class="section-title">Últimos Consejos</h2>
+                    <div class="feed-list" id="feed-container">
+                        <!-- Inserted dynamically -->
+                    </div>
+                </div>
+
+                <div class="footer-mountains"></div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             CATEGORY LIST VIEW
+             ============================================== -->
+        <section id="view-category" class="view view-hidden">
+            <header class="app-header header-solid">
+                <div class="logo" onclick="app.navigate('home')" style="cursor:pointer">
+                    <i class="fa-solid fa-layer-group logo-icon"></i>
+                    <h1>Momentos de Calma</h1>
+                </div>
+            </header>
+            <div class="main-panel">
+                <button class="btn-back" onclick="app.navigate('home')"><i class="fa-solid fa-arrow-left"></i> Volver al Inicio</button>
+                <h2 class="view-title" id="category-title" style="font-family:'Playfair Display',serif; font-size:2.5rem; text-align:center; margin-bottom: 2rem;">Categoría</h2>
+                <div class="category-list" id="category-list-container">
+                    <!-- Inserted dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             ABOUT VIEW
+             ============================================== -->
+        <section id="view-about" class="view view-hidden">
+            <header class="app-header header-solid">
+                <div class="logo" onclick="app.navigate('home')" style="cursor:pointer">
+                    <i class="fa-solid fa-layer-group logo-icon"></i>
+                    <h1>Momentos de Calma</h1>
+                </div>
+            </header>
+            <div class="main-panel">
+                <button class="btn-back" onclick="app.navigate('home')"><i class="fa-solid fa-arrow-left"></i> Volver al Inicio</button>
+                <div class="detail-content" style="max-width: 800px; margin: 0 auto;">
+                    <div class="detail-header">
+                        <span class="detail-meta">Conoce el proyecto</span>
+                        <h2 class="detail-title">Sobre mí</h2>
+                    </div>
+                    <div class="detail-body" style="text-align: center; font-size: 1.25rem; margin-bottom: 20px;">
+                        Bienvenido a mi espacio de conciencia 🧘, reflexión 📝 y transformación 🌱.<br><br>
+                        Aquí comparto relatos profundos 📖, ideas 💡 y herramientas 🛠️ para mirar la vida con atención, despertar la comprensión y avanzar hacia una transformación personal integral.<br><br>
+                        Cada video es una invitación a pensar 🤔, sentir ❤️ y crecer 🌿: desde relatos para reflexionar hasta propuestas breves de transformación integral.<br><br>
+                        Si buscas contenido que combine sabiduría 📚, sensibilidad ✨ y acción 🚀, este canal es para ti.<br><br>
+                        <strong>Acompáñame en este camino de descubrimiento y crecimiento personal.</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             DETAIL VIEW
+             ============================================== -->
+        <section id="view-detail" class="view view-hidden">
+            <header class="app-header header-solid">
+                <div class="logo" onclick="app.navigate('home')" style="cursor:pointer">
+                    <i class="fa-solid fa-layer-group logo-icon"></i>
+                    <h1>Momentos de Calma</h1>
+                </div>
+            </header>
+            <div class="main-panel">
+                <button class="btn-back" onclick="app.navigate('home')"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                <div id="detail-container">
+                    <!-- Inserted dynamically -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
