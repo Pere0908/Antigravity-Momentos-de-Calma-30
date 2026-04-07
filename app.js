@@ -87,6 +87,12 @@ const app = {
                 appState.currentCategory = param;
                 this.renderCategoryList(param);
                 break;
+            case 'search':
+                this.updateBackgroundColor(null);
+                document.getElementById('view-category').classList.remove('view-hidden');
+                document.getElementById('view-category').classList.add('section-active');
+                this.renderSearchList(param);
+                break;
             case 'detail':
                 const tip = appState.tips.find(t => t.id === param);
                 this.updateBackgroundColor(tip ? tip.categoria : null);
@@ -184,6 +190,40 @@ const app = {
         document.getElementById('category-list-container').innerHTML = listHTML;
     },
 
+    renderSearchList: function (query) {
+        document.getElementById('category-title').innerText = `Resultados para "${query}"`;
+        
+        const q = query.toLowerCase();
+        const filtered = appState.tips.filter(tip => 
+            (tip.titulo && tip.titulo.toLowerCase().includes(q)) ||
+            (tip.resumen && tip.resumen.toLowerCase().includes(q)) ||
+            (tip.contenido && tip.contenido.toLowerCase().includes(q)) ||
+            (tip['Frase de Síntesis'] && tip['Frase de Síntesis'].toLowerCase().includes(q)) ||
+            (tip.categoria && tip.categoria.toLowerCase().includes(q))
+        ).sort((a, b) => {
+            const dateA = new Date(a.created_at || 0).getTime();
+            const dateB = new Date(b.created_at || 0).getTime();
+            if (dateB !== dateA) return dateB - dateA;
+            return (b['Numero Interno'] || 0) - (a['Numero Interno'] || 0);
+        });
+
+        let listHTML = '';
+        if (filtered.length === 0) {
+            listHTML = '<p style="text-align:center; padding:2rem;">No se encontraron resultados para tu búsqueda.</p>';
+        } else {
+            filtered.forEach(tip => {
+                listHTML += `
+                    <div class="list-item" onclick="app.navigate('detail', ${tip.id})">
+                        <span class="feed-item-title">${tip.titulo}</span>
+                        <span class="feed-item-phrase">"${tip['Frase de Síntesis']}"</span>
+                        <p class="list-item-summary">${tip.resumen}</p>
+                    </div>
+                `;
+            });
+        }
+        document.getElementById('category-list-container').innerHTML = listHTML;
+    },
+
     renderDetail: function (tipId) {
         const tip = appState.tips.find(t => t.id === tipId);
         if (!tip) return;
@@ -249,16 +289,30 @@ const app = {
             appState.tips = data || [];
 
             // Setup Search
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                if (query.length > 2) {
-                    const found = appState.tips.find(t => t.titulo.toLowerCase().includes(query));
-                    if (found) {
-                        this.navigate('detail', found.id);
-                        e.target.value = ''; // clear
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = e.target.value.trim();
+                        if (query.length > 0) {
+                            this.navigate('search', query);
+                            e.target.value = ''; // clear
+                        }
                     }
+                });
+                
+                const searchIcon = document.querySelector('.search-icon');
+                if (searchIcon) {
+                    searchIcon.style.cursor = 'pointer';
+                    searchIcon.addEventListener('click', () => {
+                        const query = searchInput.value.trim();
+                        if (query.length > 0) {
+                            this.navigate('search', query);
+                            searchInput.value = '';
+                        }
+                    });
                 }
-            });
+            }
 
             // Initial render
             this.renderHome();
