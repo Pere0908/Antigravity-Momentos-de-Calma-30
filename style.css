@@ -62,7 +62,7 @@ body {
     min-height: 90svh; /* Evita que el fondo salte al hacer scroll en móviles */
     background-image: url("gonsofuentes_an_elegant_and_tranquil_background_for_your_spa__e5daf956-0daf-46bd-92eb-f28dbd006b48_3.png");
     background-size: cover;
-    background-position: center bottom;
+    background-position: center center;
     background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
